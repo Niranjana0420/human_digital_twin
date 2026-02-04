@@ -21,6 +21,25 @@ st.write("Your mood is:", mood)
 
 # Heart Rate Alert Feature
 heart_rate = st.number_input("Enter Heart Rate:", min_value=30, max_value=200)
+st.markdown("## Submit Your Health Data")
+
+if st.button("Submit"):
+
+    st.success("Data Submitted Successfully!")
+
+    st.write("### Your Submitted Details:")
+
+    st.write("Age:", age)
+    st.write("Mood:", mood)
+    st.write("Heart Rate:", heart_rate)
+
+    if heart_rate < 60:
+        st.warning("⚠️ Low Heart Rate Warning!")
+    elif heart_rate > 100:
+        st.error("⚠️ High Heart Rate Warning!")
+    else:
+        st.success("✅ Heart Rate Normal")
+
 
 if heart_rate < 60:
     st.warning("Low Heart Rate Warning!")
@@ -28,4 +47,5 @@ elif heart_rate > 100:
     st.warning("High Heart Rate Warning!")
 else:
     st.success("Heart Rate is Normal")
+
 
