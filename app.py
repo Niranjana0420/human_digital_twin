@@ -52,11 +52,10 @@ else:
 
 st.info(advice)
 
- st.write("### Your Submitted Details:")
-
-    st.write("Age:", age)
-    st.write("Mood:", mood)
-    st.write("Heart Rate:", heart_rate)
+     st.write("### Your Submitted Details:")
+     st.write("Age:", age)
+     st.write("Mood:", mood)
+     st.write("Heart Rate:", heart_rate)
 
     if heart_rate < 60:
         st.warning("⚠️ Low Heart Rate Warning!")
@@ -124,6 +123,7 @@ else:
     advice = "Your health is normal. Maintain good habits 👍"
 
 st.info(advice)
+
 
 
 
