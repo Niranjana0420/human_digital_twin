@@ -100,6 +100,32 @@ st.markdown(
     """,
     unsafe_allow_html=True
 )
+# ---------------- AI Health Suggestion ----------------
+
+st.markdown("## 🤖 AI Health Suggestion")
+
+advice = ""
+
+if mood == "Happy" and heart_rate >= 60 and heart_rate <= 100:
+    advice = "Great! Your health looks good. Keep maintaining a healthy lifestyle 😊"
+
+elif mood == "Stressed":
+    advice = "You seem stressed. Try deep breathing, meditation, or listening to calm music 🧘"
+
+elif mood == "Tired":
+    advice = "You look tired. Get enough sleep and stay hydrated 😴"
+
+elif heart_rate > 100:
+    advice = "Your heart rate is high. Avoid stress and take some rest ❤️"
+
+elif heart_rate < 60:
+    advice = "Your heart rate is low. Eat well and stay active 🍎"
+
+else:
+    advice = "Your health is normal. Maintain good habits 👍"
+
+st.info(advice)
+
 
 
 
