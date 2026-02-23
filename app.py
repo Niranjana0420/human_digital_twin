@@ -1,10 +1,12 @@
 import streamlit as st
 
-st.title("Human Digital Twin Project")
+st.set_page_config(page_title="Human Digital Twin", page_icon="🧍")
 
-st.write("Welcome! This is your Health Monitoring Digital Twin.")
+st.title("🧍 Human Digital Twin Project")
+st.write("Welcome! This is your AI-based Health Monitoring Digital Twin.")
 
-# Age Category Feature
+# ---------------- User Inputs ----------------
+
 age = st.number_input("Enter your Age:", min_value=1, max_value=120)
 
 if age < 25:
@@ -14,47 +16,26 @@ elif age < 60:
 else:
     st.success("Category: Senior")
 
-# Mood Tracker Feature
-mood = st.selectbox("Select your Mood Today:", ["Happy", "Stressed", "Tired", "Normal"])
+mood = st.selectbox("Select your Mood Today:", 
+                    ["Happy", "Stressed", "Tired", "Normal"])
 
-st.write("Your mood is:", mood)
+heart_rate = st.number_input("Enter Heart Rate:", 
+                             min_value=30, max_value=200)
 
-# Heart Rate Alert Feature
-heart_rate = st.number_input("Enter Heart Rate:", min_value=30, max_value=200)
 st.markdown("## Submit Your Health Data")
+
+# ---------------- Submit Button ----------------
 
 if st.button("Submit"):
 
-    st.success("Data Submitted Successfully!")
-    # ---------------- AI Health Suggestion ----------------
+    st.success("✅ Data Submitted Successfully!")
 
-st.markdown("## 🤖 AI Health Suggestion")
+    st.write("### 📋 Your Submitted Details:")
+    st.write("Age:", age)
+    st.write("Mood:", mood)
+    st.write("Heart Rate:", heart_rate)
 
-advice = ""
-
-if mood == "Happy" and heart_rate >= 60 and heart_rate <= 100:
-    advice = "Great! Your health looks good. Keep maintaining a healthy lifestyle 😊"
-
-elif mood == "Stressed":
-    advice = "You seem stressed. Try deep breathing, meditation, or listening to calm music 🧘"
-
-elif mood == "Tired":
-    advice = "You look tired. Get enough sleep and stay hydrated 😴"
-
-elif heart_rate > 100:
-    advice = "Your heart rate is high. Avoid stress and take some rest ❤️"
-
-elif heart_rate < 60:
-    advice = "Your heart rate is low. Eat well and stay active 🍎"
-
-else:
-    advice = "Your health is normal. Maintain good habits 👍"
-
-st.info(advice)
-     st.write("### Your Submitted Details:")
-     st.write("Age:", age)
-     st.write("Mood:", mood)
-     st.write("Heart Rate:", heart_rate)
+    # ---------------- Heart Rate Alert ----------------
 
     if heart_rate < 60:
         st.warning("⚠️ Low Heart Rate Warning!")
@@ -63,67 +44,55 @@ st.info(advice)
     else:
         st.success("✅ Heart Rate Normal")
 
+    # ---------------- AI Health Suggestion ----------------
 
-if heart_rate < 60:
-    st.warning("Low Heart Rate Warning!")
-elif heart_rate > 100:
-    st.warning("High Heart Rate Warning!")
-else:
-    st.success("Heart Rate is Normal")
-# ---------------- Digital Avatar ----------------
+    st.markdown("## 🤖 AI Health Suggestion")
 
-st.markdown("## 🧍 Digital Health Avatar")
+    if mood == "Happy" and 60 <= heart_rate <= 100:
+        advice = "Great! Your health looks good. Keep maintaining a healthy lifestyle 😊"
 
-status = ""
-color = ""
+    elif mood == "Stressed":
+        advice = "You seem stressed. Try deep breathing, meditation, or listening to calm music 🧘"
 
-if heart_rate >= 60 and heart_rate <= 100 and mood == "Happy":
-    status = "GOOD HEALTH"
-    color = "green"
+    elif mood == "Tired":
+        advice = "You look tired. Get enough sleep and stay hydrated 😴"
 
-elif heart_rate >= 50 and heart_rate <= 110:
-    status = "NORMAL HEALTH"
-    color = "orange"
+    elif heart_rate > 100:
+        advice = "Your heart rate is high. Avoid stress and take some rest ❤️"
 
-else:
-    status = "RISK LEVEL"
-    color = "red"
+    elif heart_rate < 60:
+        advice = "Your heart rate is low. Eat well and stay active 🍎"
 
-st.markdown(
-    f"""
-    <div style="padding:20px; border-radius:10px; background-color:{color}; color:white; text-align:center;">
-        <h2>🧍 {status}</h2>
-    </div>
-    """,
-    unsafe_allow_html=True
-)
-# ---------------- AI Health Suggestion ----------------
+    else:
+        advice = "Your health is normal. Maintain good habits 👍"
 
-st.markdown("## 🤖 AI Health Suggestion")
+    st.info(advice)
 
-advice = ""
+    # ---------------- Digital Avatar ----------------
 
-if mood == "Happy" and heart_rate >= 60 and heart_rate <= 100:
-    advice = "Great! Your health looks good. Keep maintaining a healthy lifestyle 😊"
+    st.markdown("## 🧍 Digital Health Avatar")
 
-elif mood == "Stressed":
-    advice = "You seem stressed. Try deep breathing, meditation, or listening to calm music 🧘"
+    if 60 <= heart_rate <= 100 and mood == "Happy":
+        status = "GOOD HEALTH"
+        color = "green"
 
-elif mood == "Tired":
-    advice = "You look tired. Get enough sleep and stay hydrated 😴"
+    elif 50 <= heart_rate <= 110:
+        status = "NORMAL HEALTH"
+        color = "orange"
 
-elif heart_rate > 100:
-    advice = "Your heart rate is high. Avoid stress and take some rest ❤️"
+    else:
+        status = "RISK LEVEL"
+        color = "red"
 
-elif heart_rate < 60:
-    advice = "Your heart rate is low. Eat well and stay active 🍎"
-
-else:
-    advice = "Your health is normal. Maintain good habits 👍"
-
-st.info(advice)
-
-
+    st.markdown(
+        f"""
+        <div style="padding:20px; border-radius:10px; background-color:{color}; 
+        color:white; text-align:center;">
+            <h2>{status}</h2>
+        </div>
+        """,
+        unsafe_allow_html=True
+    )
 
 
 
