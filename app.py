@@ -51,7 +51,6 @@ else:
     advice = "Your health is normal. Maintain good habits 👍"
 
 st.info(advice)
-
      st.write("### Your Submitted Details:")
      st.write("Age:", age)
      st.write("Mood:", mood)
@@ -123,6 +122,7 @@ else:
     advice = "Your health is normal. Maintain good habits 👍"
 
 st.info(advice)
+
 
 
 
