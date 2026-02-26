@@ -1,5 +1,5 @@
-import matplotlib.pyplot as plt
 import streamlit as st
+from streamlit_mic_recorder import mic_recorder
 
 st.set_page_config(page_title="Human Digital Twin", page_icon="🧍")
 
@@ -13,7 +13,7 @@ if "heart_history" not in st.session_state:
 
 # ---------------- User Inputs ----------------
 
-age = st.number_input("Enter your Age:", min_value=1, max_value=120, key="age")
+age = st.number_input("Enter your Age:", min_value=1, max_value=120)
 
 if age < 25:
     st.success("Category: Young Adult")
@@ -22,29 +22,40 @@ elif age < 60:
 else:
     st.success("Category: Senior")
 
-mood = st.selectbox(
-    "Select your Mood Today:",
-    ["Happy", "Stressed", "Tired", "Normal"],
-    key="mood"
+# ---------------- Mood Input (Manual + Voice) ----------------
+
+st.markdown("## 🎤 Mood Input")
+
+input_method = st.radio(
+    "Choose Mood Input Method:",
+    ["Select Manually", "Voice Input"]
 )
+
+if input_method == "Select Manually":
+    mood = st.selectbox(
+        "Select your Mood Today:",
+        ["Happy", "Stressed", "Tired", "Normal"]
+    )
+else:
+    st.write("Click below and speak your mood:")
+    audio = mic_recorder(
+        start_prompt="🎤 Start Recording",
+        stop_prompt="⏹ Stop Recording",
+        key="recorder"
+    )
+
+    mood = "Normal"
+
+    if audio:
+        st.success("Voice recorded successfully!")
+        st.info("Voice feature demo mode: Mood set as Normal")
 
 # ---------------- BMI Calculator ----------------
 
 st.markdown("## 🏋 Body Mass Index (BMI) Calculator")
 
-weight = st.number_input(
-    "Enter your Weight (kg):",
-    min_value=1.0,
-    step=0.5,
-    key="weight"
-)
-
-height = st.number_input(
-    "Enter your Height (meters):",
-    min_value=0.5,
-    step=0.01,
-    key="height"
-)
+weight = st.number_input("Enter your Weight (kg):", min_value=1.0, step=0.5)
+height = st.number_input("Enter your Height (meters):", min_value=0.5, step=0.01)
 
 bmi = None
 if height > 0:
@@ -62,12 +73,7 @@ if height > 0:
 
 # ---------------- Heart Rate Input ----------------
 
-heart_rate = st.number_input(
-    "Enter Heart Rate:",
-    min_value=30,
-    max_value=200,
-    key="heart_rate"
-)
+heart_rate = st.number_input("Enter Heart Rate:", min_value=30, max_value=200)
 
 st.markdown("## Submit Your Health Data")
 
@@ -77,7 +83,6 @@ if st.button("Submit"):
 
     st.success("✅ Data Submitted Successfully!")
 
-    # Store heart rate history
     st.session_state.heart_history.append(heart_rate)
 
     st.write("### 📋 Your Submitted Details:")
@@ -103,21 +108,16 @@ if st.button("Submit"):
 
     if mood == "Happy" and 60 <= heart_rate <= 100:
         advice = "Great! Your health looks good. Keep maintaining a healthy lifestyle 😊"
-
     elif mood == "Stressed":
-        advice = "You seem stressed. Try deep breathing, meditation, or listening to calm music 🧘"
-
+        advice = "You seem stressed. Try deep breathing, meditation 🧘"
     elif mood == "Tired":
-        advice = "You look tired. Get enough sleep and stay hydrated 😴"
-
+        advice = "You look tired. Get enough sleep 😴"
     elif heart_rate > 100:
-        advice = "Your heart rate is high. Avoid stress and take some rest ❤️"
-
+        advice = "Your heart rate is high. Take rest ❤️"
     elif heart_rate < 60:
-        advice = "Your heart rate is low. Eat well and stay active 🍎"
-
+        advice = "Your heart rate is low. Stay active 🍎"
     else:
-        advice = "Your health is normal. Maintain good habits 👍"
+        advice = "Your health is normal 👍"
 
     st.info(advice)
 
@@ -128,19 +128,17 @@ if st.button("Submit"):
     if 60 <= heart_rate <= 100 and mood == "Happy":
         status = "GOOD HEALTH"
         color = "green"
-
     elif 50 <= heart_rate <= 110:
         status = "NORMAL HEALTH"
         color = "orange"
-
     else:
         status = "RISK LEVEL"
         color = "red"
 
     st.markdown(
         f"""
-        <div style="padding:20px; border-radius:10px; background-color:{color}; 
-        color:white; text-align:center;">
+        <div style="padding:20px; border-radius:10px;
+        background-color:{color}; color:white; text-align:center;">
             <h2>{status}</h2>
         </div>
         """,
@@ -152,12 +150,4 @@ if st.button("Submit"):
 st.markdown("## 📊 Heart Rate History Graph")
 
 if len(st.session_state.heart_history) > 0:
-
-    fig = plt.figure()
-    plt.plot(st.session_state.heart_history)
-    plt.xlabel("Submission Count")
-    plt.ylabel("Heart Rate")
-    plt.title("Heart Rate History")
-
-    st.pyplot(fig)
-
+    st.line_chart(st.session_state.heart_history)
