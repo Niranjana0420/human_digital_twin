@@ -19,6 +19,31 @@ else:
 mood = st.selectbox("Select your Mood Today:", 
                     ["Happy", "Stressed", "Tired", "Normal"])
 
+# 👇👇 PASTE BMI CODE HERE 👇👇
+
+st.markdown("## 🏋 Body Mass Index (BMI) Calculator")
+
+weight = st.number_input("Enter your Weight (kg):", min_value=1.0, step=0.5)
+height = st.number_input("Enter your Height (meters):", min_value=0.5, step=0.01)
+
+if height > 0:
+    bmi = weight / (height ** 2)
+    st.write("### Your BMI is:", round(bmi, 2))
+
+    if bmi < 18.5:
+        st.warning("Category: Underweight")
+    elif bmi < 25:
+        st.success("Category: Normal Weight")
+    elif bmi < 30:
+        st.warning("Category: Overweight")
+    else:
+        st.error("Category: Obese")
+
+# 👆👆 BMI END HERE 👆👆
+
+heart_rate = st.number_input("Enter Heart Rate:", min_value=30, max_value=200)
+
+st.markdown("## Submit Your Health Data")
 heart_rate = st.number_input("Enter Heart Rate:", 
                              min_value=30, max_value=200)
 
@@ -93,6 +118,7 @@ if st.button("Submit"):
         """,
         unsafe_allow_html=True
     )
+
 
 
 
