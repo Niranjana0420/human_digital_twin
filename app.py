@@ -7,7 +7,7 @@ st.write("Welcome! This is your AI-based Health Monitoring Digital Twin.")
 
 # ---------------- User Inputs ----------------
 
-age = st.number_input("Enter your Age:", min_value=1, max_value=120)
+age = st.number_input("Enter your Age:", min_value=1, max_value=120, key="age")
 
 if age < 25:
     st.success("Category: Young Adult")
@@ -16,16 +16,31 @@ elif age < 60:
 else:
     st.success("Category: Senior")
 
-mood = st.selectbox("Select your Mood Today:", 
-                    ["Happy", "Stressed", "Tired", "Normal"])
+mood = st.selectbox(
+    "Select your Mood Today:",
+    ["Happy", "Stressed", "Tired", "Normal"],
+    key="mood"
+)
 
-# 👇👇 PASTE BMI CODE HERE 👇👇
+# ---------------- BMI Calculator ----------------
 
 st.markdown("## 🏋 Body Mass Index (BMI) Calculator")
 
-weight = st.number_input("Enter your Weight (kg):", min_value=1.0, step=0.5)
-height = st.number_input("Enter your Height (meters):", min_value=0.5, step=0.01)
+weight = st.number_input(
+    "Enter your Weight (kg):",
+    min_value=1.0,
+    step=0.5,
+    key="weight"
+)
 
+height = st.number_input(
+    "Enter your Height (meters):",
+    min_value=0.5,
+    step=0.01,
+    key="height"
+)
+
+bmi = None
 if height > 0:
     bmi = weight / (height ** 2)
     st.write("### Your BMI is:", round(bmi, 2))
@@ -39,13 +54,14 @@ if height > 0:
     else:
         st.error("Category: Obese")
 
-# 👆👆 BMI END HERE 👆👆
+# ---------------- Heart Rate Input ----------------
 
-heart_rate = st.number_input("Enter Heart Rate:", min_value=30, max_value=200)
-
-st.markdown("## Submit Your Health Data")
-heart_rate = st.number_input("Enter Heart Rate:", 
-                             min_value=30, max_value=200)
+heart_rate = st.number_input(
+    "Enter Heart Rate:",
+    min_value=30,
+    max_value=200,
+    key="heart_rate"
+)
 
 st.markdown("## Submit Your Health Data")
 
@@ -59,6 +75,9 @@ if st.button("Submit"):
     st.write("Age:", age)
     st.write("Mood:", mood)
     st.write("Heart Rate:", heart_rate)
+
+    if bmi:
+        st.write("BMI:", round(bmi, 2))
 
     # ---------------- Heart Rate Alert ----------------
 
@@ -118,10 +137,3 @@ if st.button("Submit"):
         """,
         unsafe_allow_html=True
     )
-
-
-
-
-
-
-
