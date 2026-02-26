@@ -1,9 +1,15 @@
 import streamlit as st
+import matplotlib.pyplot as plt
 
 st.set_page_config(page_title="Human Digital Twin", page_icon="🧍")
 
 st.title("🧍 Human Digital Twin Project")
 st.write("Welcome! This is your AI-based Health Monitoring Digital Twin.")
+
+# ---------------- Session Storage ----------------
+
+if "heart_history" not in st.session_state:
+    st.session_state.heart_history = []
 
 # ---------------- User Inputs ----------------
 
@@ -71,6 +77,9 @@ if st.button("Submit"):
 
     st.success("✅ Data Submitted Successfully!")
 
+    # Store heart rate history
+    st.session_state.heart_history.append(heart_rate)
+
     st.write("### 📋 Your Submitted Details:")
     st.write("Age:", age)
     st.write("Mood:", mood)
@@ -137,3 +146,17 @@ if st.button("Submit"):
         """,
         unsafe_allow_html=True
     )
+
+# ---------------- Health History Graph ----------------
+
+st.markdown("## 📊 Heart Rate History Graph")
+
+if len(st.session_state.heart_history) > 0:
+
+    fig = plt.figure()
+    plt.plot(st.session_state.heart_history)
+    plt.xlabel("Submission Count")
+    plt.ylabel("Heart Rate")
+    plt.title("Heart Rate History")
+
+    st.pyplot(fig)
