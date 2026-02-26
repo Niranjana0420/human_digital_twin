@@ -1,5 +1,5 @@
-import streamlit as st
 import matplotlib.pyplot as plt
+import streamlit as st
 
 st.set_page_config(page_title="Human Digital Twin", page_icon="🧍")
 
@@ -160,3 +160,4 @@ if len(st.session_state.heart_history) > 0:
     plt.title("Heart Rate History")
 
     st.pyplot(fig)
+
