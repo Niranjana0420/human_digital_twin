@@ -2,15 +2,77 @@ import streamlit as st
 
 st.set_page_config(page_title="Human Digital Twin", page_icon="🧍")
 
-st.title("🧍 Human Digital Twin Project")
-st.write("Welcome! This is your AI-based Health Monitoring Digital Twin.")
+# ---------------- SESSION VARIABLES ----------------
 
-# ---------------- Session Storage ----------------
+if "users" not in st.session_state:
+    st.session_state.users = {}
+
+if "logged_in" not in st.session_state:
+    st.session_state.logged_in = False
+
+if "current_user" not in st.session_state:
+    st.session_state.current_user = None
 
 if "heart_history" not in st.session_state:
     st.session_state.heart_history = []
 
-# ---------------- User Inputs ----------------
+# ---------------- LOGIN SYSTEM ----------------
+
+if not st.session_state.logged_in:
+
+    st.title("🔐 Login System - Human Digital Twin")
+
+    option = st.radio("Select Option:", ["Login", "Register"])
+
+    # -------- REGISTER --------
+    if option == "Register":
+        st.subheader("Create New Account")
+
+        new_user = st.text_input("Username")
+        new_pass = st.text_input("Password", type="password")
+
+        if st.button("Register"):
+            if new_user in st.session_state.users:
+                st.error("Username already exists!")
+            elif new_user == "" or new_pass == "":
+                st.warning("Please fill all fields")
+            else:
+                st.session_state.users[new_user] = new_pass
+                st.success("Account created successfully! Please login.")
+
+    # -------- LOGIN --------
+    if option == "Login":
+        st.subheader("Login to Your Account")
+
+        username = st.text_input("Username")
+        password = st.text_input("Password", type="password")
+
+        if st.button("Login"):
+            if username in st.session_state.users and \
+               st.session_state.users[username] == password:
+
+                st.session_state.logged_in = True
+                st.session_state.current_user = username
+                st.success("Login Successful!")
+                st.rerun()
+            else:
+                st.error("Invalid Username or Password")
+
+    st.stop()
+
+# ---------------- MAIN DASHBOARD ----------------
+
+st.sidebar.write(f"👤 Logged in as: {st.session_state.current_user}")
+
+if st.sidebar.button("Logout"):
+    st.session_state.logged_in = False
+    st.session_state.current_user = None
+    st.rerun()
+
+st.title("🧍 Human Digital Twin Dashboard")
+st.write("Welcome! This is your AI-based Health Monitoring Digital Twin.")
+
+# ---------------- USER INPUTS ----------------
 
 age = st.number_input("Enter your Age:", min_value=1, max_value=120)
 
@@ -21,7 +83,7 @@ elif age < 60:
 else:
     st.success("Category: Senior")
 
-# ---------------- Mood Input (Manual Only) ----------------
+# ---------------- MOOD ----------------
 
 st.markdown("## 😊 Mood Input")
 
@@ -30,7 +92,7 @@ mood = st.selectbox(
     ["Happy", "Stressed", "Tired", "Normal"]
 )
 
-# ---------------- BMI Calculator ----------------
+# ---------------- BMI ----------------
 
 st.markdown("## 🏋 Body Mass Index (BMI) Calculator")
 
@@ -52,7 +114,7 @@ if height > 0:
     else:
         st.error("Category: Obese")
 
-# ---------------- Heart Rate Input ----------------
+# ---------------- HEART RATE ----------------
 
 heart_rate = st.number_input(
     "Enter Heart Rate:",
@@ -60,18 +122,15 @@ heart_rate = st.number_input(
     max_value=200
 )
 
-st.markdown("## Submit Your Health Data")
+# ---------------- SUBMIT ----------------
 
-# ---------------- Submit Button ----------------
-
-if st.button("Submit"):
+if st.button("Submit Health Data"):
 
     st.success("✅ Data Submitted Successfully!")
 
-    # Store heart rate history
     st.session_state.heart_history.append(heart_rate)
 
-    st.write("### 📋 Your Submitted Details:")
+    st.write("### 📋 Submitted Details:")
     st.write("Age:", age)
     st.write("Mood:", mood)
     st.write("Heart Rate:", heart_rate)
@@ -79,8 +138,7 @@ if st.button("Submit"):
     if bmi:
         st.write("BMI:", round(bmi, 2))
 
-    # ---------------- Heart Rate Alert ----------------
-
+    # Heart Rate Alert
     if heart_rate < 60:
         st.warning("⚠️ Low Heart Rate Warning!")
     elif heart_rate > 100:
@@ -88,52 +146,27 @@ if st.button("Submit"):
     else:
         st.success("✅ Heart Rate Normal")
 
-    # ---------------- AI Health Suggestion ----------------
-
+    # AI Suggestion
     st.markdown("## 🤖 AI Health Suggestion")
 
     if mood == "Happy" and 60 <= heart_rate <= 100:
         advice = "Great! Your health looks good. Keep maintaining a healthy lifestyle 😊"
     elif mood == "Stressed":
-        advice = "You seem stressed. Try deep breathing, meditation, or listening to calm music 🧘"
+        advice = "You seem stressed. Try meditation or deep breathing 🧘"
     elif mood == "Tired":
-        advice = "You look tired. Get enough sleep and stay hydrated 😴"
+        advice = "Get proper sleep and stay hydrated 😴"
     elif heart_rate > 100:
-        advice = "Your heart rate is high. Avoid stress and take some rest ❤️"
+        advice = "Your heart rate is high. Take rest ❤️"
     elif heart_rate < 60:
-        advice = "Your heart rate is low. Eat well and stay active 🍎"
+        advice = "Your heart rate is low. Maintain balanced diet 🍎"
     else:
         advice = "Your health is normal. Maintain good habits 👍"
 
     st.info(advice)
 
-    # ---------------- Digital Avatar ----------------
+# ---------------- HEART RATE GRAPH ----------------
 
-    st.markdown("## 🧍 Digital Health Avatar")
-
-    if 60 <= heart_rate <= 100 and mood == "Happy":
-        status = "GOOD HEALTH"
-        color = "green"
-    elif 50 <= heart_rate <= 110:
-        status = "NORMAL HEALTH"
-        color = "orange"
-    else:
-        status = "RISK LEVEL"
-        color = "red"
-
-    st.markdown(
-        f"""
-        <div style="padding:20px; border-radius:10px; background-color:{color}; 
-        color:white; text-align:center;">
-            <h2>{status}</h2>
-        </div>
-        """,
-        unsafe_allow_html=True
-    )
-
-# ---------------- Heart Rate History Graph ----------------
-
-st.markdown("## 📊 Heart Rate History Graph")
+st.markdown("## 📊 Heart Rate History")
 
 if len(st.session_state.heart_history) > 0:
     st.line_chart(st.session_state.heart_history)
