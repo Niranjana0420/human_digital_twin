@@ -1,5 +1,4 @@
 import streamlit as st
-from streamlit_mic_recorder import mic_recorder
 
 st.set_page_config(page_title="Human Digital Twin", page_icon="🧍")
 
@@ -22,33 +21,14 @@ elif age < 60:
 else:
     st.success("Category: Senior")
 
-# ---------------- Mood Input (Manual + Voice) ----------------
+# ---------------- Mood Input (Manual Only) ----------------
 
-st.markdown("## 🎤 Mood Input")
+st.markdown("## 😊 Mood Input")
 
-input_method = st.radio(
-    "Choose Mood Input Method:",
-    ["Select Manually", "Voice Input"]
+mood = st.selectbox(
+    "Select your Mood Today:",
+    ["Happy", "Stressed", "Tired", "Normal"]
 )
-
-if input_method == "Select Manually":
-    mood = st.selectbox(
-        "Select your Mood Today:",
-        ["Happy", "Stressed", "Tired", "Normal"]
-    )
-else:
-    st.write("Click below and speak your mood:")
-    audio = mic_recorder(
-        start_prompt="🎤 Start Recording",
-        stop_prompt="⏹ Stop Recording",
-        key="recorder"
-    )
-
-    mood = "Normal"
-
-    if audio:
-        st.success("Voice recorded successfully!")
-        st.info("Voice feature demo mode: Mood set as Normal")
 
 # ---------------- BMI Calculator ----------------
 
@@ -58,6 +38,7 @@ weight = st.number_input("Enter your Weight (kg):", min_value=1.0, step=0.5)
 height = st.number_input("Enter your Height (meters):", min_value=0.5, step=0.01)
 
 bmi = None
+
 if height > 0:
     bmi = weight / (height ** 2)
     st.write("### Your BMI is:", round(bmi, 2))
@@ -73,7 +54,11 @@ if height > 0:
 
 # ---------------- Heart Rate Input ----------------
 
-heart_rate = st.number_input("Enter Heart Rate:", min_value=30, max_value=200)
+heart_rate = st.number_input(
+    "Enter Heart Rate:",
+    min_value=30,
+    max_value=200
+)
 
 st.markdown("## Submit Your Health Data")
 
@@ -83,6 +68,7 @@ if st.button("Submit"):
 
     st.success("✅ Data Submitted Successfully!")
 
+    # Store heart rate history
     st.session_state.heart_history.append(heart_rate)
 
     st.write("### 📋 Your Submitted Details:")
@@ -109,15 +95,15 @@ if st.button("Submit"):
     if mood == "Happy" and 60 <= heart_rate <= 100:
         advice = "Great! Your health looks good. Keep maintaining a healthy lifestyle 😊"
     elif mood == "Stressed":
-        advice = "You seem stressed. Try deep breathing, meditation 🧘"
+        advice = "You seem stressed. Try deep breathing, meditation, or listening to calm music 🧘"
     elif mood == "Tired":
-        advice = "You look tired. Get enough sleep 😴"
+        advice = "You look tired. Get enough sleep and stay hydrated 😴"
     elif heart_rate > 100:
-        advice = "Your heart rate is high. Take rest ❤️"
+        advice = "Your heart rate is high. Avoid stress and take some rest ❤️"
     elif heart_rate < 60:
-        advice = "Your heart rate is low. Stay active 🍎"
+        advice = "Your heart rate is low. Eat well and stay active 🍎"
     else:
-        advice = "Your health is normal 👍"
+        advice = "Your health is normal. Maintain good habits 👍"
 
     st.info(advice)
 
@@ -137,15 +123,15 @@ if st.button("Submit"):
 
     st.markdown(
         f"""
-        <div style="padding:20px; border-radius:10px;
-        background-color:{color}; color:white; text-align:center;">
+        <div style="padding:20px; border-radius:10px; background-color:{color}; 
+        color:white; text-align:center;">
             <h2>{status}</h2>
         </div>
         """,
         unsafe_allow_html=True
     )
 
-# ---------------- Health History Graph ----------------
+# ---------------- Heart Rate History Graph ----------------
 
 st.markdown("## 📊 Heart Rate History Graph")
 
